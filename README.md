@@ -1,1 +1,1 @@
-# Kosynskyi-learning-react
+learning-react
