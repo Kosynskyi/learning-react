@@ -1,4 +1,4 @@
-.event {
+/* .event {
   position: relative;
   border: 2px dashed black;
   padding: 8px;
@@ -12,9 +12,9 @@
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-}
+} */
 
-.info {
+/* .info {
   display: flex;
   align-items: center;
   margin-top: 0;
@@ -24,15 +24,15 @@
   line-height: 24px;
   font-weight: 400;
   letter-spacing: 0.25px;
-}
-
+} */
+/* 
 .icon {
   display: block;
   margin-right: 8px;
   color: var(--color-secondary-text);
-}
+} */
 
-.chip {
+/* .chip {
   position: absolute;
   top: 4px;
   right: 4px;
@@ -41,9 +41,9 @@
   text-transform: uppercase;
   background-color: #000;
   color: #fff;
-}
+} */
 
-.free {
+/* .free {
   background-color: var(--color-green);
 }
 
@@ -53,4 +53,4 @@
 
 .vip {
   background-color: var(--color-red);
-}
+} */
