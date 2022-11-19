@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ThemeProvider } from '@emotion/react';
+import { ThemeProvider } from 'styled-components';
 import './index.css';
-import { theme } from './constans/theme';
+import { theme } from './theme';
 import { App } from 'components/App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
