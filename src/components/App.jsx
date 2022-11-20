@@ -1,48 +1,31 @@
-import styled from 'styled-components';
-import {
-  HiSearch,
-  HiOutlinePencilAlt,
-  HiOutlineStar,
-  HiOutlineVolumeUp,
-} from 'react-icons/hi';
-
-import { Button } from './Button';
 import { Box } from './Box';
-
-const Text = styled.p`
-  color: ${props => props.theme.colors.accent};
-  font-family: ${props => props.theme.fonts.body};
-  font-size: ${props => props.theme.fontSizes.l};
-  padding-top: ${props => props.theme.space[3]}px;
-  padding-bottom: ${props => props.theme.space[3]}px;
-`;
+import { Profile } from './Profile';
+import { Statistics } from './Statistics';
+import { FriendList } from './FriendList';
+import { TransactionHistory } from './TransactionHistory';
+import user from '../data/user';
+import data from '../data/data';
+import friends from '../data/friends';
+import transactions from '../data/transactions';
 
 export const App = () => {
+  const { username, tag, location, avatar, stats } = user;
+
   return (
-    <Box
-      bg="primary"
-      color="text"
-      pt={4}
-      width="50%"
-      display="flex"
-      alignItems="center"
-      border="normal"
-      borderColor="accent"
-      position="relative"
-      as="main"
-    >
-      Lorem ipsum dolor sit amet.
-      <Text>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dignissimos,
-        magnam.
-      </Text>
-      <Button icon={HiSearch}>Search</Button>
-      <Button icon={HiOutlinePencilAlt}>Filter</Button>
-      <Button icon={HiOutlineStar}>Show Modal</Button>
-      <Button icon={HiOutlineVolumeUp} type="submit">
-        LogIn
-      </Button>
-      <Button type="submit">LogOut</Button>
+    <Box bg="primary" textAlign="center" as="main">
+      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nobis,
+      voluptates?
+      <Profile
+        username={username}
+        tag={tag}
+        location={location}
+        avatar={avatar}
+        stats={stats}
+      />
+      <Statistics title="Upload stats" stats={data} />
+      <Statistics stats={data} />
+      <FriendList friends={friends} />
+      <TransactionHistory transactions={transactions} />
     </Box>
   );
 };
