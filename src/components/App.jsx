@@ -1,31 +1,46 @@
-import { Box } from './Box';
-import { Profile } from './Profile';
-import { Statistics } from './Statistics';
-import { FriendList } from './FriendList';
-import { TransactionHistory } from './TransactionHistory';
-import user from '../data/user';
-import data from '../data/data';
-import friends from '../data/friends';
-import transactions from '../data/transactions';
+import Counter from './Counter';
+import Dropdown from './Dropdown';
+import ColorPicker from './ColorPicker';
+import TodoList from './TodoList';
+import { Component } from 'react';
 
-export const App = () => {
-  const { username, tag, location, avatar, stats } = user;
+const ColorPickerOptions = [
+  { label: 'red', color: '#F44336' },
+  { label: 'green', color: '#4CAF50' },
+  { label: 'blue', color: '#2196F3' },
+  { label: 'grey', color: '#607D8B' },
+  { label: 'pink', color: '#E91E63' },
+  { label: 'indigo', color: '#3F51B5' },
+];
 
-  return (
-    <Box bg="primary" textAlign="center" as="main">
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nobis,
-      voluptates?
-      <Profile
-        username={username}
-        tag={tag}
-        location={location}
-        avatar={avatar}
-        stats={stats}
-      />
-      <Statistics title="Upload stats" stats={data} />
-      <Statistics stats={data} />
-      <FriendList friends={friends} />
-      <TransactionHistory transactions={transactions} />
-    </Box>
-  );
-};
+export class App extends Component {
+  state = {
+    todos: [
+      { id: 'id-1', text: 'Выучить основы React', completed: false },
+      { id: 'id-2', text: 'Разобраться с React Router', completed: true },
+      { id: 'id-3', text: 'Пережить Redux', completed: true },
+    ],
+  };
+
+  deleteTodo = id => {
+    this.setState(prevState => ({
+      todos: prevState.todos.filter(item => item.id !== id),
+    }));
+  };
+
+  render() {
+    const { todos } = this.state;
+    return (
+      <div>
+        <Counter initialValue={10} />
+        <Dropdown />
+        <ColorPicker options={ColorPickerOptions} />
+        <TodoList
+          todos={todos}
+          deleteTodo={this.deleteTodo}
+          totalTodo={this.totalTodo}
+        />
+      </div>
+    );
+  }
+}
