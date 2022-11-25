@@ -1,7 +1,7 @@
 import React from 'react';
 import './TodoList.css';
 
-const TodoList = ({ todos, deleteTodo }) => (
+const TodoList = ({ todos, deleteTodo, onToggleCompleted }) => (
   <>
     <p>Общее кол-во todo: {todos.length}</p>
     <p>
@@ -13,6 +13,13 @@ const TodoList = ({ todos, deleteTodo }) => (
       {todos.map(({ id, text, completed }) => {
         return (
           <li className="TodoList__item" key={id}>
+            <input
+              type="checkbox"
+              className="TodoList__checkbox"
+              checked={completed}
+              onChange={() => onToggleCompleted(id)}
+            />
+
             <p className="TodoList__text">{text}</p>
             <button type="button" onClick={() => deleteTodo(id)}>
               Удалить
