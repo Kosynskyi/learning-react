@@ -1,82 +1,39 @@
-import { Component } from 'react';
-import shortid from 'shortid';
-import TodoList from './TodoList';
-import Form from './Form';
-import TodoEditor from './TodoEditor';
-import Filter from './Filter';
-import initialTodos from '../todos.json';
+import React, { Component } from 'react';
+
+import { Feedback } from './Feedback';
+import { Statistics } from './Statistics';
 
 export class App extends Component {
   state = {
-    todos: initialTodos,
-    filter: '',
+    good: 0,
+    neutral: 0,
+    bad: 0,
   };
 
-  addTodo = text => {
-    const todo = {
-      id: shortid.generate(),
-      text,
-      completed: false,
-    };
+  addFeedback = e => {
+    const { name } = e.currentTarget;
 
-    return this.setState(prevState => ({
-      todos: [todo, ...prevState.todos],
-    }));
-  };
-
-  deleteTodo = id => {
     this.setState(prevState => ({
-      todos: prevState.todos.filter(item => item.id !== id),
+      [name]: prevState[name] + 1,
     }));
   };
 
-  toggleCompleted = todoId => {
-    this.setState(prevState => ({
-      todos: prevState.todos.map(item =>
-        item.id === todoId ? { ...item, completed: !item.completed } : item
-      ),
-    }));
+  totalFeedback = () =>
+    Object.values(this.state).reduce((acc, item) => acc + item, 0);
 
-    // this.setState(prevState => ({
-    //   todos: prevState.todos.map(todo => {
-    //     if (todoId === todo.id) {
-    //       return { ...todo, completed: !todo.completed };
-    //     }
-    //     return todo;
-    //   }),
-    // }));
-  };
-
-  changeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
-  };
-
-  getVisibleTodos = () => {
-    const { filter, todos } = this.state;
-
-    const normalizedFilter = filter.toLowerCase();
-
-    return todos.filter(item =>
-      item.text.toLowerCase().includes(normalizedFilter)
-    );
-  };
+  positivePercentage = () =>
+    Math.floor((this.state.good / this.totalFeedback()) * 100);
 
   render() {
-    const { filter } = this.state;
-
     return (
-      <div>
-        <TodoEditor onSubmit={this.addTodo} />
-        <Filter value={filter} onChange={this.changeFilter} />
-
-        <TodoList
-          todos={this.getVisibleTodos()}
-          deleteTodo={this.deleteTodo}
-          totalTodo={this.totalTodo}
-          onToggleCompleted={this.toggleCompleted}
+      <>
+        <Feedback data={this.state} addFeedback={this.addFeedback} />
+        <Statistics
+          data={this.state}
+          total={this.totalFeedback()}
+          positivePercentage={this.positivePercentage()}
         />
-        <Form onSubmit={this.formSubmitHandler} />
-      </div>
+      </>
     );
   }
 }
