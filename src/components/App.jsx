@@ -1,39 +1,62 @@
 import React, { Component } from 'react';
 
-import { Feedback } from './Feedback';
-import { Statistics } from './Statistics';
+import { Box } from './Box';
+import { Form } from './Form';
+import { Contacts } from './Contacts';
+import { Filter } from './Filter';
 
 export class App extends Component {
   state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
   };
 
-  addFeedback = e => {
-    const { name } = e.currentTarget;
+  onFormSubmit = data => {
+    if (this.state.contacts.find(item => item.name === data.name)) {
+      return alert(`${data.name} is already on the list `);
+    }
 
+    this.setState(prevState => ({ contacts: [data, ...prevState.contacts] }));
+  };
+
+  deleteContact = id => {
     this.setState(prevState => ({
-      [name]: prevState[name] + 1,
+      contacts: prevState.contacts.filter(item => item.id !== id),
     }));
   };
 
-  totalFeedback = () =>
-    Object.values(this.state).reduce((acc, item) => acc + item, 0);
+  getVisibleContacts = () => {
+    const { filter, contacts } = this.state;
+    const normalizedName = filter.toLowerCase();
 
-  positivePercentage = () =>
-    Math.floor((this.state.good / this.totalFeedback()) * 100);
+    return contacts.filter(({ name }) =>
+      name.toLowerCase().includes(normalizedName)
+    );
+  };
+
+  changeFilter = e => {
+    const { value } = e.currentTarget;
+
+    this.setState({ filter: value });
+  };
 
   render() {
+    const { filter } = this.state;
+
     return (
-      <>
-        <Feedback data={this.state} addFeedback={this.addFeedback} />
-        <Statistics
-          data={this.state}
-          total={this.totalFeedback()}
-          positivePercentage={this.positivePercentage()}
+      <Box as="section" p={6}>
+        <Form onSubmit={this.onFormSubmit} />
+        <Filter filter={filter} changeFilter={this.changeFilter} />
+        <Contacts
+          contacts={this.getVisibleContacts()}
+          deleteContact={this.deleteContact}
         />
-      </>
+      </Box>
     );
   }
 }
