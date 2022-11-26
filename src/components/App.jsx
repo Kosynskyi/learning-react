@@ -17,8 +17,13 @@ export class App extends Component {
   };
 
   onFormSubmit = data => {
-    if (this.state.contacts.find(item => item.name === data.name)) {
-      return alert(`${data.name} is already on the list `);
+    const normalizedName = data.name.toLowerCase();
+    const repeatContact = this.state.contacts.find(
+      ({ name }) => name.toLowerCase() === normalizedName
+    );
+
+    if (repeatContact) {
+      return alert(`${data.name} is already on the list`);
     }
 
     this.setState(prevState => ({ contacts: [data, ...prevState.contacts] }));
