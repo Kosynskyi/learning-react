@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Form, Field } from 'formik';
 
 export const Title = styled.h2`
   margin: ${props => props.theme.space[1]}px;
@@ -7,7 +8,7 @@ export const Title = styled.h2`
   text-align: center;
 `;
 
-export const ContactForm = styled.form`
+export const ContactForm = styled(Form)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -20,7 +21,7 @@ export const Label = styled.label`
   font-size: ${props => props.theme.fontSizes.m};
 `;
 
-export const Input = styled.input`
+export const Input = styled(Field)`
   margin-left: ${props => props.theme.space[4]}px;
   padding: ${props => props.theme.space[3]}px;
 `;

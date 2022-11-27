@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Box } from './Box';
-import { Form } from './Form';
+import { PhonebookForm } from './Form';
 import { Contacts } from './Contacts';
 import { Filter } from './Filter';
 
@@ -55,7 +55,7 @@ export class App extends Component {
 
     return (
       <Box as="section" p={6}>
-        <Form onSubmit={this.onFormSubmit} />
+        <PhonebookForm onSubmit={this.onFormSubmit} />
         <Filter filter={filter} changeFilter={this.changeFilter} />
         <Contacts
           contacts={this.getVisibleContacts()}
