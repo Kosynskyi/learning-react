@@ -16,6 +16,22 @@ export class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    console.log('componentDidMount ');
+
+    const contacts = JSON.parse(localStorage.getItem('contacts'));
+
+    if (localStorage.getItem('contacts')) {
+      this.setState({ contacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   onFormSubmit = data => {
     const normalizedName = data.name.toLowerCase();
     const repeatContact = this.state.contacts.find(
