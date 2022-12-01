@@ -1,66 +1,50 @@
 import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Box } from './Box';
-import { PhonebookForm } from './Form';
-import { Contacts } from './Contacts';
-import { Filter } from './Filter';
+import Searchbar from './Searchbar';
+import ImageGallery from './ImageGallery';
+import Button from './Button';
+import Modal from './Modal';
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
+    query: '',
+    page: 1,
+    // showModal: false,
   };
 
-  onFormSubmit = data => {
-    const normalizedName = data.name.toLowerCase();
-    const repeatContact = this.state.contacts.find(
-      ({ name }) => name.toLowerCase() === normalizedName
-    );
-
-    if (repeatContact) {
-      return alert(`${data.name} is already on the list`);
-    }
-
-    this.setState(prevState => ({ contacts: [data, ...prevState.contacts] }));
+  handleSubmit = query => {
+    this.setState({ query, page: 1 });
   };
 
-  deleteContact = id => {
+  loadMore = () => {
     this.setState(prevState => ({
-      contacts: prevState.contacts.filter(item => item.id !== id),
+      page: prevState.page + 1,
     }));
   };
 
-  getVisibleContacts = () => {
-    const { filter, contacts } = this.state;
-    const normalizedName = filter.toLowerCase();
-
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().includes(normalizedName)
-    );
-  };
-
-  changeFilter = e => {
-    const { value } = e.currentTarget;
-
-    this.setState({ filter: value });
+  openModal = () => {
+    this.setState(prevState => ({
+      showModal: !prevState.showModal,
+    }));
   };
 
   render() {
-    const { filter } = this.state;
+    const { query, page, showModal } = this.state;
 
     return (
       <Box as="section" p={6}>
-        <PhonebookForm onSubmit={this.onFormSubmit} />
-        <Filter filter={filter} changeFilter={this.changeFilter} />
-        <Contacts
-          contacts={this.getVisibleContacts()}
-          deleteContact={this.deleteContact}
-        />
+        <Searchbar onSubmit={this.handleSubmit} />
+        <ImageGallery query={query} page={page} />
+        <ToastContainer autoClose={3000} />
+        {showModal && <Modal openModal={this.openModal} />}
+        {query && <Button text="Load more" onClick={this.loadMore} />}
+
+        {/* <button type="button" onClick={this.openModal}>
+          Open modal
+        </button> */}
       </Box>
     );
   }
