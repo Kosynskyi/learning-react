@@ -1,51 +1,92 @@
 import React, { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import { Box } from './Box';
-import Searchbar from './Searchbar';
-import ImageGallery from './ImageGallery';
-import Button from './Button';
-import Modal from './Modal';
+import * as API from 'services/api';
+import { GlobalStyle } from './GlobalStyles';
+import { Layout } from './Layout';
+import { MaterialEditorForm } from './MaterialEditorForm';
+import { MaterialList } from './MaterialList';
 
 export class App extends Component {
   state = {
-    query: '',
-    page: 1,
-    // showModal: false,
+    materials: [],
+    isLoading: false,
+    error: null,
   };
 
-  handleSubmit = query => {
-    this.setState({ query, page: 1 });
+  async componentDidMount() {
+    try {
+      this.setState({ isLoading: true });
+      const materials = await API.getMaterials();
+      this.setState({ materials, isLoading: false });
+    } catch (error) {
+      this.setState({ isLoading: false, error: true });
+      console.log(error);
+    }
+  }
+
+  addMaterial = async values => {
+    try {
+      const material = await API.addMaterial(values);
+      this.setState(prevState => ({
+        materials: [...prevState.materials, material],
+      }));
+      // console.log(material);
+    } catch (error) {
+      this.setState({ isLoading: false, error: true });
+      console.log(error);
+    }
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+  deleteMaterial = async id => {
+    try {
+      await API.deleteMaterial(id);
+      this.setState(prevState => ({
+        materials: prevState.materials.filter(item => item.id !== id),
+      }));
+    } catch (error) {
+      this.setState({ error: true });
+      console.log(error);
+    }
   };
 
-  openModal = () => {
-    this.setState(prevState => ({
-      showModal: !prevState.showModal,
-    }));
+  updateMaterial = async updateObj => {
+    try {
+      const updatedMaterials = await API.changeMaterial(updateObj);
+      this.setState(prevState => ({
+        materials: prevState.materials.map(item =>
+          item.id === updateObj.id ? updatedMaterials : item
+        ),
+      }));
+    } catch (error) {
+      this.setState({ error: true });
+      console.log(error);
+    }
   };
 
   render() {
-    const { query, page, showModal } = this.state;
+    const { isLoading, materials, error } = this.state;
 
     return (
-      <Box as="section" p={6}>
-        <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery query={query} page={page} />
-        <ToastContainer autoClose={3000} />
-        {showModal && <Modal openModal={this.openModal} />}
-        {query && <Button text="Load more" onClick={this.loadMore} />}
-
-        {/* <button type="button" onClick={this.openModal}>
-          Open modal
-        </button> */}
-      </Box>
+      <Layout>
+        <GlobalStyle />
+        {error && (
+          <p>
+            Уппс... :( что-то пошло не так, перезагрузите страницу и попробуйте
+            ещё раз
+          </p>
+        )}
+        <MaterialEditorForm onSubmit={this.addMaterial} />
+        {isLoading ? (
+          <h2>Загружаем материалы</h2>
+        ) : (
+          <MaterialList
+            items={materials}
+            onDelete={this.deleteMaterial}
+            onUpdate={this.updateMaterial}
+          />
+        )}
+      </Layout>
     );
   }
 }
+
+export default App;

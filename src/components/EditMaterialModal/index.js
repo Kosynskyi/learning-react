@@ -1,0 +1,1 @@
+export { EditMaterialModal } from './EditMaterialModal';
