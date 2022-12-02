@@ -1,90 +1,69 @@
 import React, { Component } from 'react';
-import * as API from 'services/api';
-import { GlobalStyle } from './GlobalStyles';
-import { Layout } from './Layout';
-import { MaterialEditorForm } from './MaterialEditorForm';
-import { MaterialList } from './MaterialList';
+import { Box } from './Box';
+import { VideoList } from './VideoList';
+import { Player } from './Player/Player';
+import { ReaderList } from './Reader/ReaderList';
+import { Buttons } from './Reader/Buttons';
+import { Controls } from './Reader/Controls';
+import videos from '../data/videos';
+import publications from '../data/publications';
 
 export class App extends Component {
   state = {
-    materials: [],
-    isLoading: false,
-    error: null,
+    selectedVideo: null,
+    activeIndex: 0,
   };
 
-  async componentDidMount() {
-    try {
-      this.setState({ isLoading: true });
-      const materials = await API.getMaterials();
-      this.setState({ materials, isLoading: false });
-    } catch (error) {
-      this.setState({ isLoading: false, error: true });
-      console.log(error);
-    }
-  }
+  selectedVideo = link => {
+    this.setState({ selectedVideo: link });
+  };
 
-  addMaterial = async values => {
-    try {
-      const material = await API.addMaterial(values);
-      this.setState(prevState => ({
-        materials: [...prevState.materials, material],
-      }));
-      // console.log(material);
-    } catch (error) {
-      this.setState({ isLoading: false, error: true });
-      console.log(error);
+  prevPublication = () => {
+    this.setState(prevState => ({ activeIndex: prevState.activeIndex - 1 }));
+
+    if (this.state.activeIndex === 0) {
+      this.setState({ activeIndex: publications.length - 1 });
     }
   };
 
-  deleteMaterial = async id => {
-    try {
-      await API.deleteMaterial(id);
-      this.setState(prevState => ({
-        materials: prevState.materials.filter(item => item.id !== id),
-      }));
-    } catch (error) {
-      this.setState({ error: true });
-      console.log(error);
-    }
-  };
+  nextPublication = () => {
+    this.setState(prevState => ({ activeIndex: prevState.activeIndex + 1 }));
 
-  updateMaterial = async updateObj => {
-    try {
-      const updatedMaterials = await API.changeMaterial(updateObj);
-      this.setState(prevState => ({
-        materials: prevState.materials.map(item =>
-          item.id === updateObj.id ? updatedMaterials : item
-        ),
-      }));
-    } catch (error) {
-      this.setState({ error: true });
-      console.log(error);
+    if (this.state.activeIndex === publications.length - 1) {
+      this.setState({
+        activeIndex: 0,
+      });
     }
   };
 
   render() {
-    const { isLoading, materials, error } = this.state;
+    const { selectedVideo, activeIndex } = this.state;
+
+    const totalPublications = publications.length;
+    const activePublication = activeIndex + 1;
+    const currentPublication = publications[activeIndex];
 
     return (
-      <Layout>
-        <GlobalStyle />
-        {error && (
-          <p>
-            Уппс... :( что-то пошло не так, перезагрузите страницу и попробуйте
-            ещё раз
-          </p>
-        )}
-        <MaterialEditorForm onSubmit={this.addMaterial} />
-        {isLoading ? (
-          <h2>Загружаем материалы</h2>
-        ) : (
-          <MaterialList
-            items={materials}
-            onDelete={this.deleteMaterial}
-            onUpdate={this.updateMaterial}
-          />
-        )}
-      </Layout>
+      <Box p={6}>
+        <Buttons
+          prev={this.prevPublication}
+          next={this.nextPublication}
+          activeIndex={activeIndex}
+          totalPublications={totalPublications}
+        />
+        <Controls
+          totalPublications={totalPublications}
+          activePublication={activePublication}
+        />
+        <ReaderList currentPublication={currentPublication} />
+
+        <h1>
+          Selected video:{' '}
+          {selectedVideo ? selectedVideo : 'вы ещё ничего не выбрали'}
+        </h1>
+        <VideoList videos={videos} onSelect={this.selectedVideo} />
+        <Player url={selectedVideo} />
+      </Box>
     );
   }
 }

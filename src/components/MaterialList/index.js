@@ -1,1 +1,0 @@
-export { MaterialList } from './MaterialList';

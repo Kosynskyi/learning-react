@@ -1,1 +1,0 @@
-export { MaterialEditorForm } from './MaterialEditorForm';
