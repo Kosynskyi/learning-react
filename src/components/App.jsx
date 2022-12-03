@@ -1,71 +1,98 @@
 import React, { Component } from 'react';
-import { Box } from './Box';
-import { VideoList } from './VideoList';
-import { Player } from './Player/Player';
-import { ReaderList } from './Reader/ReaderList';
-import { Buttons } from './Reader/Buttons';
-import { Controls } from './Reader/Controls';
-import videos from '../data/videos';
-import publications from '../data/publications';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// import { Box } from './Box';
+import { fetchImages } from './services/API';
+import { Searchbar } from './Searchbar';
+import { ImageGallery } from './ImageGallery';
+import { Button } from './Button';
+import { Loader } from './Loader';
+import { ImageError } from './ImageError';
+import { Modal } from './Modal';
+import { ImageQueryText } from './ImageQueryText';
 
 export class App extends Component {
   state = {
-    selectedVideo: null,
-    activeIndex: 0,
+    query: '',
+    images: null,
+    page: 1,
+    status: 'idle',
+    selectedImg: null,
+    alt: null,
   };
 
-  selectedVideo = link => {
-    this.setState({ selectedVideo: link });
-  };
+  async componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
 
-  prevPublication = () => {
-    this.setState(prevState => ({ activeIndex: prevState.activeIndex - 1 }));
+    if (query !== prevState.query || page !== prevState.page) {
+      this.setState({ status: 'pending' });
+      try {
+        if (query !== prevState.query) {
+          await fetchImages(query, page).then(response => {
+            this.setState({
+              images: response.hits,
+              status: 'resolve',
+            });
+          });
+        }
 
-    if (this.state.activeIndex === 0) {
-      this.setState({ activeIndex: publications.length - 1 });
+        if (page > 1 && page !== prevState.page) {
+          await fetchImages(query, page).then(response => {
+            this.setState(prevState => ({
+              images: [...prevState.images, ...response.hits],
+              status: 'resolve',
+            }));
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        this.setState({ status: 'rejected' });
+      }
     }
+  }
+
+  handleSubmit = value => {
+    this.setState({
+      query: value,
+      page: 1,
+    });
   };
 
-  nextPublication = () => {
-    this.setState(prevState => ({ activeIndex: prevState.activeIndex + 1 }));
+  loadMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
 
-    if (this.state.activeIndex === publications.length - 1) {
-      this.setState({
-        activeIndex: 0,
-      });
-    }
+  openModal = (largeImg, tags) => {
+    this.setState({ selectedImg: largeImg, alt: tags });
+  };
+
+  closeModal = () => {
+    this.setState({ selectedImg: null, alt: null });
   };
 
   render() {
-    const { selectedVideo, activeIndex } = this.state;
-
-    const totalPublications = publications.length;
-    const activePublication = activeIndex + 1;
-    const currentPublication = publications[activeIndex];
+    const { images, status, query, selectedImg, alt } = this.state;
 
     return (
-      <Box p={6}>
-        <Buttons
-          prev={this.prevPublication}
-          next={this.nextPublication}
-          activeIndex={activeIndex}
-          totalPublications={totalPublications}
-        />
-        <Controls
-          totalPublications={totalPublications}
-          activePublication={activePublication}
-        />
-        <ReaderList currentPublication={currentPublication} />
-
-        <h1>
-          Selected video:{' '}
-          {selectedVideo ? selectedVideo : 'вы ещё ничего не выбрали'}
-        </h1>
-        <VideoList videos={videos} onSelect={this.selectedVideo} />
-        <Player url={selectedVideo} />
-      </Box>
+      <>
+        <Searchbar onSubmit={this.handleSubmit} />
+        {images && <ImageGallery items={images} openModal={this.openModal} />}
+        {query && <Button onLoadMore={this.loadMore}>Load more</Button>}
+        {status === 'pending' && <Loader />}
+        {status === 'rejcted' && <ImageError />}
+        {status === 'idle' && <ImageQueryText />}
+        <ToastContainer autoClose={3000} />
+        {selectedImg && (
+          <Modal
+            selectedImg={selectedImg}
+            alt={alt}
+            closeModal={this.closeModal}
+          />
+        )}
+      </>
     );
   }
 }
-
-export default App;
