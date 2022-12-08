@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { Box } from 'components/Box';
 import { Title, Button } from './Feedback.styled';
 
