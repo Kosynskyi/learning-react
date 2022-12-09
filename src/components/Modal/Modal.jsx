@@ -1,44 +1,40 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import { Backdrop, ModalWindow, Img } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.closeByEsc);
-  }
+export const Modal = ({ selectedImg, alt, closeModal }) => {
+  useEffect(() => {
+    const closeByEsc = ({ code }) => {
+      if (code === 'Escape') {
+        closeModal();
+      }
+    };
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.closeByEsc);
-  }
+    window.addEventListener('keydown', closeByEsc);
 
-  closeByEsc = ({ code }) => {
-    if (code === 'Escape') {
-      this.props.closeModal();
-    }
-  };
+    return () => {
+      window.removeEventListener('keydown', closeByEsc);
+    };
+  }, [closeModal]);
 
-  closeByBackdrop = event => {
+  const closeByBackdrop = event => {
     if (event.target === event.currentTarget) {
-      this.props.closeModal();
+      closeModal();
     }
   };
 
-  render() {
-    const { selectedImg, alt } = this.props;
-
-    return createPortal(
-      <Backdrop onClick={this.closeByBackdrop}>
-        <ModalWindow>
-          <Img src={selectedImg} alt={alt} />
-        </ModalWindow>
-      </Backdrop>,
-      modalRoot
-    );
-  }
-}
+  return createPortal(
+    <Backdrop onClick={closeByBackdrop}>
+      <ModalWindow>
+        <Img src={selectedImg} alt={alt} />
+      </ModalWindow>
+    </Backdrop>,
+    modalRoot
+  );
+};
 
 Modal.propTypes = {
   selectedImg: PropTypes.string.isRequired,

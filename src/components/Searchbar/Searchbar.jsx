@@ -1,4 +1,5 @@
 import React from 'react';
+// import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -7,59 +8,47 @@ import { toast } from 'react-toastify';
 import { Box } from 'components/Box';
 import { StyledForm, Button, StyledField } from './Searchbar.styled';
 
-// export class Searchbar extends Component {
-//   state = {
-//     query: '',
-//   };
+// export const Searchbar = ({ onSubmit }) => {
+//   const [query, setQuery] = useState('');
 
-//   handleChange = e => {
-//     this.setState({
-//       query: e.currentTarget.value,
-//     });
-//   };
+//   const handleChange = e => setQuery(e.currentTarget.value);
 
-//   handleSubmit = e => {
+//   const handleSubmit = e => {
 //     e.preventDefault();
 //     const query = e.currentTarget.elements.query.value;
 //     if (query === '') {
 //       toast('Please, enter your request');
 //     }
-//     this.props.onSubmit(query);
-//     this.resetForm();
+//     onSubmit(query);
+//     resetForm();
 //   };
 
-//   resetForm = () => {
-//     this.setState({ query: '' });
-//   };
+//   const resetForm = () => setQuery('');
 
-//   render() {
-//     const { query } = this.state;
+//   return (
+//     <header className="searchbar">
+//       <form className="form" onSubmit={handleSubmit}>
+//         <Button type="submit" className="button">
+//           <span className="button-label">
+//             <FcSearch />
+//             Search
+//           </span>
+//         </Button>
 
-//     return (
-//       <header className="searchbar">
-//         <form className="form" onSubmit={this.handleSubmit}>
-//           <button type="submit" className="button">
-//             <span className="button-label">
-//               <FcSearch />
-//               Search
-//             </span>
-//           </button>
-
-//           <input
-//             className="input"
-//             name="query"
-//             value={query}
-//             type="text"
-//             autoComplete="off"
-//             autoFocus
-//             placeholder="Search images and photos"
-//             onChange={this.handleChange}
-//           />
-//         </form>
-//       </header>
-//     );
-//   }
-// }
+//         <input
+//           className="input"
+//           name="query"
+//           value={query}
+//           type="text"
+//           autoComplete="off"
+//           autoFocus
+//           placeholder="Search images and photos"
+//           onChange={handleChange}
+//         />
+//       </form>
+//     </header>
+//   );
+// };
 
 export const Searchbar = ({ onSubmit }) => {
   const schema = yup.object({

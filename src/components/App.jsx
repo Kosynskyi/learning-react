@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
+import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // import { Box } from './Box';
@@ -12,87 +12,83 @@ import { ImageError } from './ImageError';
 import { Modal } from './Modal';
 import { ImageQueryText } from './ImageQueryText';
 
-export class App extends Component {
-  state = {
-    query: '',
-    images: null,
-    page: 1,
-    status: 'idle',
-    selectedImg: null,
-    alt: null,
-  };
+export const App = () => {
+  const [query, setQuery] = useState('');
+  const [images, setImages] = useState(null);
+  const [page, setPage] = useState(1);
+  const [status, setStatus] = useState('idle');
+  const [selectedImg, setSelectedImg] = useState(null);
+  const [alt, setAlt] = useState(null);
 
-  async componentDidUpdate(_, prevState) {
-    const { query, page } = this.state;
+  useEffect(() => {
+    if (!query) return;
 
-    if (query !== prevState.query || page !== prevState.page) {
-      this.setState({ status: 'pending' });
+    async function getImages() {
+      setStatus('pending');
+
       try {
-        if (query !== prevState.query) {
-          await fetchImages(query, page).then(response => {
-            this.setState({
-              images: response.hits,
-              status: 'resolve',
-            });
-          });
+        const data = await fetchImages(query, page);
+
+        if (page === 1) {
+          if (!data.totalHits) {
+            toast.info(
+              `couldn't find ${query}, please check your request and try again`
+            );
+            setQuery('');
+            setStatus('resolved');
+            return;
+          }
+
+          setImages(data.hits);
+          setStatus('resolved');
+        } else {
+          setImages(prevImages => [...prevImages, ...data.hits]);
+          setStatus('resolved');
         }
 
-        if (page > 1 && page !== prevState.page) {
-          await fetchImages(query, page).then(response => {
-            this.setState(prevState => ({
-              images: [...prevState.images, ...response.hits],
-              status: 'resolve',
-            }));
-          });
+        if (data.hits.length === 0) {
+          toast.info('everything was loaded');
+          setQuery('');
         }
       } catch (error) {
-        console.log(error);
-        this.setState({ status: 'rejected' });
+        setStatus('rejected');
+        toast.error('Ooops...try again');
       }
     }
-  }
 
-  handleSubmit = value => {
-    this.setState({
-      query: value,
-      page: 1,
-    });
+    getImages();
+  }, [page, query]);
+
+  const handleSubmit = value => {
+    setQuery(value);
+    setPage(1);
+    setImages(null);
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+  const loadMore = () => setPage(page => page + 1);
+
+  const openModal = (largeImg, tags) => {
+    setSelectedImg(largeImg);
+    setAlt(tags);
   };
 
-  openModal = (largeImg, tags) => {
-    this.setState({ selectedImg: largeImg, alt: tags });
+  const closeModal = () => {
+    setSelectedImg(null);
+    setAlt(null);
   };
 
-  closeModal = () => {
-    this.setState({ selectedImg: null, alt: null });
-  };
-
-  render() {
-    const { images, status, query, selectedImg, alt } = this.state;
-
-    return (
-      <>
-        <Searchbar onSubmit={this.handleSubmit} />
-        {images && <ImageGallery items={images} openModal={this.openModal} />}
-        {query && <Button onLoadMore={this.loadMore}>Load more</Button>}
-        {status === 'pending' && <Loader />}
-        {status === 'rejcted' && <ImageError />}
-        {status === 'idle' && <ImageQueryText />}
-        <ToastContainer autoClose={3000} />
-        {selectedImg && (
-          <Modal
-            selectedImg={selectedImg}
-            alt={alt}
-            closeModal={this.closeModal}
-          />
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Searchbar onSubmit={handleSubmit} />
+      {images && <ImageGallery items={images} openModal={openModal} />}
+      {query && <Button onLoadMore={loadMore}>Load more</Button>}
+      {status === 'pending' && <Loader />}
+      {status === 'rejcted' && <ImageError />}
+      {status === 'idle' && <ImageQueryText />}
+      <ToastContainer autoClose={3000} />
+      {selectedImg && (
+        <Modal selectedImg={selectedImg} alt={alt} closeModal={closeModal} />
+      )}
+    </>
+  );
+};
