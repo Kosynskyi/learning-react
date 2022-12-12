@@ -1,31 +1,38 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import About from 'pages/About';
-import Home from 'pages/Home';
-import NotFound from 'pages/NotFound';
-import Products from 'pages/Products';
-import ProductDetails from 'pages/ProductDetails';
-import SharedLayout from './SharedLayout';
-
-import Mission from './Mission';
-import Team from './Team';
-import Reviews from './Reviews';
+import { Route, Routes } from 'react-router-dom';
+import { GlobalStyles } from './GlobalStyles';
+import Layout from './Layout';
+import Sales from 'pages/Sales';
+import Invoices from './Invoices';
+import InvoiceDetails from './InvoiceDetails';
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<SharedLayout />}>
-        <Route index element={<Home />} />
-        <Route path="about" element={<About />}>
-          <Route path="mission" element={<Mission />} />
-          <Route path="team" element={<Team />} />
-          <Route path="reviews" element={<Reviews />} />
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route path="dashboard" element={<div>Dashboard</div>} />
+          <Route path="sales" element={<Sales />}>
+            <Route path="analytics" element={<div>Analytics</div>} />
+            <Route
+              path="invoices"
+              element={
+                <div>
+                  <Invoices />
+                </div>
+              }
+            >
+              <Route path=":invoiceId" element={<InvoiceDetails />} />
+            </Route>
+            <Route path="deposits" element={<div>Deposits</div>} />
+          </Route>
+          <Route path="reports" element={<div>Reports</div>} />
+          <Route path="feedback" element={<div>Feedback</div>} />
+          <Route path="customers" element={<div>Customers</div>} />
         </Route>
-        <Route path="products" element={<Products />} />
-        <Route path="products/:id" element={<ProductDetails />} />
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Routes>
+      </Routes>
+      <GlobalStyles />
+    </>
   );
 };
 
