@@ -1,34 +1,23 @@
 {
-  "name": "learning-react",
+  "name": "movie",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kosynskyi.github.io/learning-react/",
+  "homepage": "https://kosynskyi.github.io/imovie/",
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.2.0",
-    "basiclightbox": "^5.0.4",
-    "date-fns": "^2.29.3",
-    "formik": "^2.2.9",
-    "nanoid": "^4.0.0",
+    "axios": "^1.2.1",
     "prop-types": "^15.8.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-hot-toast": "^2.4.0",
-    "react-icons": "^4.6.0",
+    "react-icons": "^4.7.1",
     "react-loader-spinner": "^5.3.4",
-    "react-player": "^2.11.0",
     "react-router-dom": "^6.4.5",
-    "react-scripts": "^5.0.1",
-    "react-toastify": "^9.1.1",
-    "shortid": "^2.2.16",
+    "react-scripts": "5.0.1",
     "styled-components": "^5.3.6",
     "styled-system": "^5.1.5",
-    "web-vitals": "^2.1.3",
-    "yup": "^0.32.11"
+    "web-vitals": "^2.1.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -55,19 +44,9 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "postcss-normalize": "^10.0.1"
-  },
-  "description": "**Read in other languages: [Русский](README.md), [Polska](README.pl.md).**",
+  "description": "This project was created with [Create React App](https://github.com/facebook/create-react-app).  To get acquainted and configure additional features [refer to documentation](https://facebook.github.io/create-react-app/docs/getting-started).",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Kosynskyi/Kosynskyi-learning-react.git"
-  },
+  "keywords": [],
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Kosynskyi/Kosynskyi-learning-react/issues"
-  },
-  "keywords": []
+  "license": "ISC"
 }
