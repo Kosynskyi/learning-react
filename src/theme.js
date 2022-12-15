@@ -8,6 +8,8 @@ export const theme = {
     secondary: '#05a',
     accent: '#609',
     muted: '#f6f6f6',
+    red: '#e50914',
+    effect: '#8500ff',
   },
   space: ['auto', 0, 2, 4, 8, 16, 32, 64, 128, 256],
   fonts: {
@@ -37,6 +39,7 @@ export const theme = {
   radii: {
     none: '0',
     normal: '4px',
+    awesome: '6px',
     round: '50%',
   },
 };

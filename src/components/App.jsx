@@ -1,48 +1,30 @@
-import { lazy } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
-import { GlobalStyles } from './GlobalStyles';
-import Layout from './Layout';
-// import Invoices from './Invoices';
-// import InvoiceDetails from './InvoiceDetails';
-// import Sales from 'pages/Sales';
-// import Customers from 'pages/Customers';
-// import CustomerDetails from 'pages/CustomerDetails';
-const Invoices = lazy(() => import('./Invoices'));
-const InvoiceDetails = lazy(() => import('./InvoiceDetails'));
+import React, { lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import SharedLayout from './SharedLayout';
+import { Box } from './Box';
 
-const Sales = lazy(() => import('pages/Sales'));
-const Customers = lazy(() => import('pages/Customers'));
-const CustomerDetails = lazy(() => import('pages/CustomerDetails'));
+const Home = lazy(() => import('pages/Home'));
+const Movies = lazy(() => import('pages/Movies'));
+const MovieDetails = lazy(() => import('pages/MovieDetails'));
+const NotFound = lazy(() => import('pages/NotFound'));
+const Casts = lazy(() => import('./Casts'));
+const Reviews = lazy(() => import('./Reviews'));
 
 const App = () => {
   return (
-    <>
+    <Box p={5} pt={6}>
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="dashboard" />} />
-          <Route path="dashboard" element={<div>Dashboard</div>} />
-          <Route path="sales" element={<Sales />}>
-            <Route path="analytics" element={<div>Analytics</div>} />
-            <Route
-              path="invoices"
-              element={
-                <div>
-                  <Invoices />
-                </div>
-              }
-            >
-              <Route path=":invoiceId" element={<InvoiceDetails />} />
-            </Route>
-            <Route path="deposits" element={<div>Deposits</div>} />
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<Home />} />
+          <Route path="movies" element={<Movies />} />
+          <Route path="movies/:movieId" element={<MovieDetails />}>
+            <Route path="cast" element={<Casts />} />
+            <Route path="reviews" element={<Reviews />} />
           </Route>
-          <Route path="reports" element={<div>Reports</div>} />
-          <Route path="feedback" element={<div>Feedback</div>} />
-          <Route path="customers" element={<Customers />} />
-          <Route path="customers/:customerId" element={<CustomerDetails />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
-      <GlobalStyles />
-    </>
+    </Box>
   );
 };
 

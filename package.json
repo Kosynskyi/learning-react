@@ -22,7 +22,7 @@
     "react-loader-spinner": "^5.3.4",
     "react-player": "^2.11.0",
     "react-router-dom": "^6.4.5",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-toastify": "^9.1.1",
     "shortid": "^2.2.16",
     "styled-components": "^5.3.6",
@@ -57,5 +57,17 @@
   },
   "devDependencies": {
     "postcss-normalize": "^10.0.1"
-  }
+  },
+  "description": "**Read in other languages: [Русский](README.md), [Polska](README.pl.md).**",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kosynskyi/Kosynskyi-learning-react.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kosynskyi/Kosynskyi-learning-react/issues"
+  },
+  "keywords": []
 }
