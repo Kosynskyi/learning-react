@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Box } from './Box';
 import Layout from './Layout';
+import DashboardPage from 'pages/DashboardPage';
 import LoginPage from 'pages/LoginPage';
 
 const App = () => {
@@ -10,6 +11,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="login" element={<LoginPage />} />
+          <Route path="dashboard" element={<DashboardPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
