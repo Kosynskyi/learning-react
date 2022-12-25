@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact } from 'redux/Contacts/contactSlice';
+import { getContacts } from 'redux/Contacts/contactSelectors';
 
 import { Title, ContactForm, Label, Input, Button } from './Form.styled';
 
-export const Form = ({ onSubmit }) => {
+export const Form = () => {
+  const dispatch = useDispatch();
+  const getContactsList = useSelector(getContacts);
+
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -28,7 +34,17 @@ export const Form = ({ onSubmit }) => {
 
     const contact = { id: nanoid(), name, number };
 
-    onSubmit(contact);
+    const normalizedName = name.toLowerCase();
+    const repeatContact = getContactsList.find(
+      ({ name }) => name.toLowerCase() === normalizedName
+    );
+
+    if (repeatContact) {
+      resetForm();
+      return alert(`${name} is already on the list`);
+    }
+
+    dispatch(addContact(contact));
     resetForm();
   };
 
