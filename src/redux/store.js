@@ -1,53 +1,15 @@
-import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import { configureStore } from '@reduxjs/toolkit';
-import { contactSlice } from './Contacts/contactSlice';
-import { filterSlice } from './Filter/filterSlice';
-
-const contactsPersistConfig = {
-  key: 'contacts',
-  storage,
-};
-
-const filterPersistConfig = {
-  key: 'filter',
-  storage,
-};
-
-const persistedReducer = persistReducer(
-  contactsPersistConfig,
-  contactSlice.reducer
-);
-
-const filterPersistedReducer = persistReducer(
-  filterPersistConfig,
-  filterSlice.reducer
-);
-
-// export const store = configureStore({
-//   reducer: { contacts: ContactSlice.reducer, filter: filterSlice.reducer },
-// });
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { pokemonApi } from './pokemon';
 
 export const store = configureStore({
   reducer: {
-    contacts: persistedReducer,
-    filter: filterPersistedReducer,
+    [pokemonApi.reducerPath]: pokemonApi.reducer,
   },
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
+  middleware: getDefaultMiddleware => [
+    ...getDefaultMiddleware(),
+    pokemonApi.middleware,
+  ],
 });
 
-export const persistor = persistStore(store);
+setupListeners(store.dispatch);
