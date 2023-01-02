@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import { nanoid } from 'nanoid';
 import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from 'redux/Contacts/contactSlice';
-import { getContacts } from 'redux/Contacts/contactSelectors';
+import { addContact } from 'redux/Contacts/contactsOperations';
+import { selectContacts } from 'redux/Contacts/contactSelectors';
 
 import { Title, ContactForm, Label, Input, Button } from './Form.styled';
 
 export const Form = () => {
   const dispatch = useDispatch();
-  const getContactsList = useSelector(getContacts);
+  const contactsList = useSelector(selectContacts);
 
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
 
   const handleChange = e => {
     const { name, value } = e.currentTarget;
@@ -20,8 +19,8 @@ export const Form = () => {
       case 'name':
         setName(value);
         break;
-      case 'number':
-        setNumber(value);
+      case 'phone':
+        setPhone(value);
         break;
 
       default:
@@ -32,10 +31,9 @@ export const Form = () => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    const contact = { id: nanoid(), name, number };
-
+    const contact = { name, phone };
     const normalizedName = name.toLowerCase();
-    const repeatContact = getContactsList.find(
+    const repeatContact = contactsList.find(
       ({ name }) => name.toLowerCase() === normalizedName
     );
 
@@ -50,7 +48,7 @@ export const Form = () => {
 
   const resetForm = () => {
     setName('');
-    setNumber('');
+    setPhone('');
   };
 
   return (
@@ -73,8 +71,8 @@ export const Form = () => {
           Number:
           <Input
             type="tel"
-            name="number"
-            value={number}
+            name="phone"
+            value={phone}
             onChange={handleChange}
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"

@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/Contacts/contactSlice';
-import { getContacts } from 'redux/Contacts/contactSelectors';
-import { getFilterValue } from 'redux/Filter/filterSelector';
+import { RotatingLines } from 'react-loader-spinner';
+import {
+  selectContacts,
+  selectLoading,
+  selectError,
+} from 'redux/Contacts/contactSelectors';
+import { selectFilterValue } from 'redux/Filter/filterSelector';
+import {
+  fetchContacts,
+  deleteContact,
+} from 'redux/Contacts/contactsOperations';
 
 import {
   Title,
@@ -14,9 +22,17 @@ import {
 
 export const Contacts = () => {
   const dispatch = useDispatch();
-  const getContactsList = useSelector(getContacts);
-  const getFilteredValue = useSelector(getFilterValue);
-  console.log('getContactsList ', getContactsList);
+  const getContactsList = useSelector(selectContacts);
+  const getFilteredValue = useSelector(selectFilterValue);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  console.log(loading);
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
+  const handleDelete = id => dispatch(deleteContact(id));
 
   const visibleContacts = () => {
     return getContactsList.filter(item =>
@@ -27,13 +43,14 @@ export const Contacts = () => {
   return (
     <>
       <Title>Contacts</Title>
+      {loading && !error && <RotatingLines />}
       <ContactList>
-        {visibleContacts().map(({ id, name, number }) => {
+        {visibleContacts().map(({ id, name, phone }) => {
           return (
             <ContactItem key={id}>
               <ContactInfo>{name}</ContactInfo>
-              <ContactInfo>{number}</ContactInfo>
-              <Button type="button" onClick={() => dispatch(deleteContact(id))}>
+              <ContactInfo>{phone}</ContactInfo>
+              <Button type="button" onClick={() => handleDelete(id)}>
                 Delete
               </Button>
             </ContactItem>
