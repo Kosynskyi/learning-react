@@ -1,4 +1,6 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Box } from './Box';
 import { Form } from './Form';
 import { Contacts } from './Contacts';
@@ -10,6 +12,7 @@ export const App = () => {
       <Form />
       <Filter />
       <Contacts />
+      <ToastContainer autoClose={3000} />
     </Box>
   );
 };

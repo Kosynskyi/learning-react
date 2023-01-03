@@ -1,41 +1,18 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { RotatingLines } from 'react-loader-spinner';
-import {
-  selectContacts,
-  selectLoading,
-  selectError,
-} from 'redux/Contacts/contactSelectors';
+import { useSelector } from 'react-redux';
+import { useGetContactsQuery } from 'redux/Contacts/contactSlice';
 import { selectFilterValue } from 'redux/Filter/filterSelector';
-import {
-  fetchContacts,
-  deleteContact,
-} from 'redux/Contacts/contactsOperations';
-
-import {
-  Title,
-  ContactList,
-  ContactItem,
-  ContactInfo,
-  Button,
-} from './Contacts.styled';
+import ContactItem from './ContactItem';
+import { Title, ContactList } from './Contacts.styled';
 
 export const Contacts = () => {
-  const dispatch = useDispatch();
-  const getContactsList = useSelector(selectContacts);
+  const { data, error, isLoading, isFetching } = useGetContactsQuery('');
   const getFilteredValue = useSelector(selectFilterValue);
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
-  console.log(loading);
-
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
-
-  const handleDelete = id => dispatch(deleteContact(id));
 
   const visibleContacts = () => {
-    return getContactsList.filter(item =>
+    if (!data) return;
+
+    return data.filter(item =>
       item.name.toLowerCase().includes(getFilteredValue.toLowerCase())
     );
   };
@@ -43,19 +20,14 @@ export const Contacts = () => {
   return (
     <>
       <Title>Contacts</Title>
-      {loading && !error && <RotatingLines />}
+      {isFetching && <RotatingLines />}
       <ContactList>
-        {visibleContacts().map(({ id, name, phone }) => {
-          return (
-            <ContactItem key={id}>
-              <ContactInfo>{name}</ContactInfo>
-              <ContactInfo>{phone}</ContactInfo>
-              <Button type="button" onClick={() => handleDelete(id)}>
-                Delete
-              </Button>
-            </ContactItem>
-          );
-        })}
+        {data &&
+          !error &&
+          !isLoading &&
+          visibleContacts().map(({ id, name, phone }) => {
+            return <ContactItem key={id} id={id} name={name} phone={phone} />;
+          })}
       </ContactList>
     </>
   );

@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from 'redux/Contacts/contactsOperations';
-import { selectContacts } from 'redux/Contacts/contactSelectors';
+import { toast } from 'react-toastify';
+import {
+  useAddContactMutation,
+  useGetContactsQuery,
+} from 'redux/Contacts/contactSlice';
 
 import { Title, ContactForm, Label, Input, Button } from './Form.styled';
 
 export const Form = () => {
-  const dispatch = useDispatch();
-  const contactsList = useSelector(selectContacts);
-
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+
+  const { data } = useGetContactsQuery('');
+  const [addContact] = useAddContactMutation();
 
   const handleChange = e => {
     const { name, value } = e.currentTarget;
@@ -33,16 +35,16 @@ export const Form = () => {
 
     const contact = { name, phone };
     const normalizedName = name.toLowerCase();
-    const repeatContact = contactsList.find(
+
+    const repeatContact = data.find(
       ({ name }) => name.toLowerCase() === normalizedName
     );
 
     if (repeatContact) {
       resetForm();
-      return alert(`${name} is already on the list`);
+      return toast.error(`${name} is already on the list`);
     }
-
-    dispatch(addContact(contact));
+    addContact(contact);
     resetForm();
   };
 
@@ -53,7 +55,10 @@ export const Form = () => {
 
   return (
     <>
+      {/* {isSuccess &&
+        toast.success(`${name} has been successfully added to the phonebook`)} */}
       <Title>Phonebook</Title>
+
       <ContactForm onSubmit={handleSubmit}>
         <Label>
           Name:

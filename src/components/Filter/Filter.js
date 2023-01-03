@@ -19,6 +19,7 @@ export const Filter = () => {
       <Input
         type="text"
         name="filter"
+        placeholder="enter your query"
         value={getFilter}
         onChange={handleChange}
       />

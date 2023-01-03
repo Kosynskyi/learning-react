@@ -14,7 +14,7 @@ export const ContactList = styled.ul`
   padding: ${props => props.theme.space[1]}px;
 `;
 
-export const ContactItem = styled.li`
+export const Contact = styled.li`
   display: flex;
   flex-direction: row;
   margin-bottom: ${props => props.theme.space[4]}px;
